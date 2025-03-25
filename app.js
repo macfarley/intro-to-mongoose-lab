@@ -4,54 +4,65 @@ const express = require('express');
 const prompt = require('prompt-sync')();
 const Customer = require('./models/customer');
 const username = prompt('What is your name? ');
+// Prompt user for input upon reset/start
 
-
-console.log(`Welcome to the CRM, ${username}`);
-console.log('Please select an option:');
-console.log('1. Create a new customer');
-console.log('2. View all customers');
-console.log('3. Update a customer');
-console.log('4. Delete a customer');
-console.log('5. Quit');
-
-const option = prompt('Enter your choice: ');
+function userInput () {
+    console.log('\n', 'Please select an option:');
+    console.log('1. Create a new customer');
+    console.log('2. View all customers');
+    console.log('3. Update a customer');
+    console.log('4. Delete a customer');
+    console.log('5. Quit');
+    const option = prompt('Enter your choice: ');
 
 switch (option) {
     case '1':
         // Code to create a new customer
         const newCustomer = async () => {
-            await Customer.create({
+            const result = await Customer.create({
                 name: prompt('Enter the name: '),
                 age: prompt('Enter the age: ')
             });
-            console.log(`Success! ${Customer} created` );
+            console.log(`Success! Customer profile created for`, result.name);
+            // Prompt user for input upon reset/start
+            userInput();
         };
         newCustomer();
         break;
     case '2':
         // Code to view all customers
         const findCustomers =  async () => {
-            await Customer.find({});
-            console.log(Customers);
+            const result = await Customer.find({});
+            console.log('Heres all the customers:' , result);
+            userInput();
         }
         findCustomers();
         break;
     case '3':
         // Code to update a customer
         updateCustomer = async () => {
-            await Customer.findByIdAndUpdate(prompt('Enter the ID: '), {
+            const result = await Customer.find({});
+            console.log('/n','Heres all the customers:' , result, 'Enter the ID of the customer you want to update');
+            
+            const userChanges = await Customer.findByIdAndUpdate(prompt('Enter the ID: '), {
                 name: prompt('Enter the name: '),
                 age: prompt('Enter the age: ')
-            });
-            console.log(`Success! ${Customer} updated` );
+            }
+            , {new: true});
+            console.log(`Success! updated`, userChanges);
+            userInput();
         }
         updateCustomer();
         break;
     case '4':
         // Code to delete a customer
         deleteCustomer = async () => {
-            await Customer.findByIdAndDelete(prompt('Enter the ID: '));
-            console.log(`Success! ${Customer} deleted` );
+            const result = await Customer.find({});
+            console.log('\n', 'Heres all the customers:' , result, 'Enter the ID of the customer you want to delete');
+            
+            const entryRemoved = await Customer.findByIdAndDelete(prompt('Enter the ID: '), );
+            console.log(`Customer Deleted`, entryRemoved.name, '\n');
+            userInput();
         }
         deleteCustomer();
         break;
@@ -62,3 +73,11 @@ switch (option) {
     default:
         console.log('Invalid option');
 }
+    };
+
+console.log(`Welcome to the CRM, ${username}`);
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, );
+userInput();
+
+
